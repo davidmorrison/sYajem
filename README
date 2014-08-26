@@ -1,0 +1,32 @@
+sYajem is a wrapper for running YaJEM (T. Renk, Phys. Rev. C 78 (2008)
+034908).  YaJEM itself provides a modified version of the PYSHOW
+routine, but it needs several other components to produce usable
+results:  
+
+1. A source of parton-parton interactions.  For this we have
+pp_pythia, which is a wrapper around PYTHIA, running p+p collisions at
+a specified sqrt(s).  It runs the fastjet anti-kT algorithm on each
+event for a range of jet R parameters.  It also writes out a list of
+parton-parton interactions.
+
+2. A set of back-to-back trajectories suitable for the nuclear
+collision you want to study.  At the momemnt, it's assumed that the
+"production points" are distributed in the transverse plan according
+to T_AB(x,y).  These are provided as a ROOT file containing pairs of
+TGraphs specifying (t,rho(t)).  The parameter that relates the energy
+density to qhat or ehat, YAPARS(2), needs to be fit to R_AA data.
+
+sYajem picks a parton pair and a trajectory. It chooses one branch of
+the trajectory pair, set up the call to PYSHOW, and runs PYEXEC.  The
+result is rotated and boosted to match the specification in the input
+file. sYajem then chooses the other branch of the trajectory and
+repeats the procedure.  It then swaps around parts of these two events
+to get two new events, each of which has a parton following one of the
+two branches of the original trajectory. The fastjet anti-kT algorithm
+is run on these new events.  This procedure is repeated N_coll times
+for each A+A event.
+
+A simple macro, jet.C, divides the A+A histograms by the p+p ones
+scaled by <N_coll> and the relative number of events.  The result
+should be R_AA.
+
