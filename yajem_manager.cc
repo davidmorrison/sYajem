@@ -82,7 +82,9 @@ yajem_manager::yajem_manager(const std::string& _root, int _ranseed)
   root_file = new TFile(C.c_str(), "RECREATE");
   for (int i = 2; i < 8; ++i)
     {
-      string name = "inclusive_jets_0" + to_string(i);
+      stringstream ss;
+      ss <<  "inclusive_jets_0" << i;
+      string name = ss.str();
       float key = i/10.0;
       TH1F *hist = new TH1F(name.c_str(), name.c_str(), 200, 0.0, 100.0);
       jet_hists[key] = *hist;
